@@ -4,3 +4,7 @@ DemografiTest/.settings/
 DemografiTest/.classpath
 DemografiTest/.project
 DemografiTest/bin/
+HDemografiSim/obj/
+HDemografiSim/Properties/
+HDemografiSim/bin/
+HDemografiSim/gtk-gui/
