@@ -12,6 +12,9 @@ namespace HDemografiSim
 		HStandardChartLine populationLine;
 		HChart populationChart;
 
+		HIndexedChartLine birthRate;
+		HChart rateChart;
+
 		public MainDemograftSim()
 		{
 			window = new Window ("HDemografiSim");
@@ -29,7 +32,16 @@ namespace HDemografiSim
 
 			populationChart = new HChart ("Population chart", populationLine);
 
-			window.Add (populationChart);
+			birthRate = new HIndexedChartLine ("Birth rate", new DColor(200, 140, 255));
+			birthRate.AddPoints (1, 1.3f, 1.4f, 1.2f, 1.35f, 2f, 2.6f, 2.7f, 3.2f, 4, 3.6f);
+
+			rateChart = new HChart ("Rates Chart", birthRate);
+
+			var box = new VBox (true, 10);
+			box.Add (populationChart);
+			box.Add (rateChart);
+
+			window.Add (box);
 			window.ShowAll ();
 		}
 

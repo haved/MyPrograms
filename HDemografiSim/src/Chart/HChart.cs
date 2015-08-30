@@ -45,50 +45,36 @@ namespace HDemografiSim
 
 			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
 
+				g.Scale (1, -1);
+				g.Translate (0, -evnt.Area.Height);
+
+				float xScale = evnt.Area.Width / xSize;
+				float yScale = evnt.Area.Height / ySize;
+
 				g.Antialias = Antialias.Subpixel;
-				g.LineWidth = 7;
+				g.LineWidth = 4;
 
 				foreach (HChartLine line in lines) {
 					if (line.GetPointCount () < 1)
 						continue;
 
-					DColor linecolor = line.GetColor ();
-					g.SetSourceRGB (linecolor.r, linecolor.g, linecolor.b);
-
 					float newX, newY;
 					line.GetPointPos (0, out newX, out newY);
 
-					g.MoveTo (newX/xSize*evnt.Area.Width, (1-newY/ySize)*evnt.Area.Height);
+					//g.MoveTo (newX*xScale, 0);
+					g.MoveTo (newX*xScale, newY*yScale);
 
 					for (int j = 0; j < line.GetPointCount () - 1; j++) {
 						line.GetPointPos (j + 1, out newX, out newY);
-						g.LineTo (newX/xSize*evnt.Area.Width, (1-newY/ySize)*evnt.Area.Height);
+						g.LineTo (newX*xScale, newY*yScale);
 					}
 
+					DColor linecolor = line.GetColor ();
+					g.SetSourceRGB (linecolor.r, linecolor.g, linecolor.b);
 					g.Stroke ();
 				}
+				g.Restore ();
 			}
-			//GdkWindow.DrawLine(normal, 0, 0, 400, 200);
-
-			/*foreach (HChartLine line in lines)
-			{
-				if (line.GetPointCount () < 1)
-					continue;
-
-				float newX, newY;
-				line.GetPointPos (0, out newX, out newY);
-				for (int j = 0; j < line.GetPointCount ()-1; j++) {
-					normal.Foreground = line.GetColor ();
-					float cX = newX, cY = newY;
-					line.GetPointPos (j+1, out newX, out newY);
-					GdkWindow.DrawLine (normal, (int)(cX / xSize * evnt.Area.Width), (int)((1-cY / ySize) * evnt.Area.Height), 
-						(int)(newX / xSize * evnt.Area.Width), (int)((1-newY / ySize) * evnt.Area.Height));
-					GdkWindow.DrawRectangle(normal, true, new Gdk.Rectangle(
-						(int)(cX / xSize * evnt.Area.Width)-4, (int)((1-cY / ySize) * evnt.Area.Height)-4, 8, 8));
-				}
-				GdkWindow.DrawRectangle(normal, true, new Gdk.Rectangle(
-					(int)(newX / xSize * evnt.Area.Width)-4, (int)((1-newY / ySize) * evnt.Area.Height)-4, 8, 8));
-			}*/
 
 			return true;
 		}

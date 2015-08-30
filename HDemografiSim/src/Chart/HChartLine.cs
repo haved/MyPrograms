@@ -5,6 +5,7 @@ namespace HDemografiSim
 {
 	public abstract class HChartLine
 	{
+		protected DColor fillColor;
 		protected DColor color;
 		protected String name;
 
@@ -12,6 +13,7 @@ namespace HDemografiSim
 		{
 			this.name = name;
 			this.color = color;
+			fillColor = new DColor(color.r*1.3f, color.g*1.3f, color.b*1.3f);
 		}
 
 		public abstract int GetPointCount();
@@ -25,6 +27,11 @@ namespace HDemografiSim
 		public DColor GetColor()
 		{
 			return color;
+		}
+
+		public DColor GetFillColor()
+		{
+			return fillColor;
 		}
 
 		public String GetName()

@@ -60,6 +60,7 @@
     <Compile Include="src\MainDemografiSim.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="src\DColor.cs" />
+    <Compile Include="src\Chart\HIndexedChartLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
