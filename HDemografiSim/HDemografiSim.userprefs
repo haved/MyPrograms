@@ -1,8 +1,11 @@
 ﻿<Properties StartupItem="HDemografiSim.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="src\Chart\HChart.cs">
     <Files>
-      <File FileName="Program.cs" Line="1" Column="1" />
+      <File FileName="src\MainDemografiSim.cs" Line="28" Column="38" />
+      <File FileName="src\Chart\HChart.cs" Line="52" Column="35" />
+      <File FileName="src\Chart\HChartLine.cs" Line="11" Column="12" />
+      <File FileName="src\Chart\HStandardChartLine.cs" Line="56" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

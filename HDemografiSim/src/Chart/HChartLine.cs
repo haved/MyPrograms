@@ -5,10 +5,10 @@ namespace HDemografiSim
 {
 	public abstract class HChartLine
 	{
-		protected Color color;
+		protected DColor color;
 		protected String name;
 
-		protected HChartLine (String name, Color color)
+		protected HChartLine (String name, DColor color)
 		{
 			this.name = name;
 			this.color = color;
@@ -22,7 +22,7 @@ namespace HDemografiSim
 
 		public abstract float GetBiggestYValue();
 
-		public Color GetColor()
+		public DColor GetColor()
 		{
 			return color;
 		}

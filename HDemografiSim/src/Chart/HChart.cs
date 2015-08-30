@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using Cairo;
 
 namespace HDemografiSim
 {
@@ -16,7 +17,6 @@ namespace HDemografiSim
 			this.name = name;
 			this.lines = lines;
 
-			ModifyFg (StateType.Normal, new Gdk.Color (100, 255, 140));
 			ModifyBg (StateType.Normal, new Gdk.Color (230, 230, 230));
 		}
 
@@ -43,27 +43,52 @@ namespace HDemografiSim
 		{
 			base.OnExposeEvent (evnt);
 
-			Gdk.GC normal = Style.BaseGC (StateType.Normal);
+			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
 
-			GdkWindow.DrawLine(normal, 0, 0, 400, 200);
+				g.Antialias = Antialias.Subpixel;
+				g.LineWidth = 7;
 
-			foreach (HChartLine line in lines)
+				foreach (HChartLine line in lines) {
+					if (line.GetPointCount () < 1)
+						continue;
+
+					DColor linecolor = line.GetColor ();
+					g.SetSourceRGB (linecolor.r, linecolor.g, linecolor.b);
+
+					float newX, newY;
+					line.GetPointPos (0, out newX, out newY);
+
+					g.MoveTo (newX/xSize*evnt.Area.Width, (1-newY/ySize)*evnt.Area.Height);
+
+					for (int j = 0; j < line.GetPointCount () - 1; j++) {
+						line.GetPointPos (j + 1, out newX, out newY);
+						g.LineTo (newX/xSize*evnt.Area.Width, (1-newY/ySize)*evnt.Area.Height);
+					}
+
+					g.Stroke ();
+				}
+			}
+			//GdkWindow.DrawLine(normal, 0, 0, 400, 200);
+
+			/*foreach (HChartLine line in lines)
 			{
 				if (line.GetPointCount () < 1)
 					continue;
-				float newX=0, newY=0;
+
+				float newX, newY;
 				line.GetPointPos (0, out newX, out newY);
 				for (int j = 0; j < line.GetPointCount ()-1; j++) {
+					normal.Foreground = line.GetColor ();
 					float cX = newX, cY = newY;
 					line.GetPointPos (j+1, out newX, out newY);
-					GdkWindow.DrawLine (normal, (int)(cX / xSize * evnt.Area.Width), (int)(1-(cY / ySize) * evnt.Area.Height), 
-						(int)(newX / xSize * evnt.Area.Width), (int)(1-(newY / ySize) * evnt.Area.Height));
+					GdkWindow.DrawLine (normal, (int)(cX / xSize * evnt.Area.Width), (int)((1-cY / ySize) * evnt.Area.Height), 
+						(int)(newX / xSize * evnt.Area.Width), (int)((1-newY / ySize) * evnt.Area.Height));
 					GdkWindow.DrawRectangle(normal, true, new Gdk.Rectangle(
-						(int)(cX / xSize * evnt.Area.Width)-4, (int)(1-(cY / ySize) * evnt.Area.Height)-4, 8, 8));
+						(int)(cX / xSize * evnt.Area.Width)-4, (int)((1-cY / ySize) * evnt.Area.Height)-4, 8, 8));
 				}
 				GdkWindow.DrawRectangle(normal, true, new Gdk.Rectangle(
-					(int)(newX / xSize * evnt.Area.Width)-4, (int)(1-(newY / ySize) * evnt.Area.Height)-4, 8, 8));
-			}
+					(int)(newX / xSize * evnt.Area.Width)-4, (int)((1-newY / ySize) * evnt.Area.Height)-4, 8, 8));
+			}*/
 
 			return true;
 		}

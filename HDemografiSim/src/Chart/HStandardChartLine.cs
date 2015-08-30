@@ -19,7 +19,7 @@ namespace HDemografiSim
 
 		readonly List<Point> points;
 
-		public HStandardChartLine (String name, Color color) : base(name, color)
+		public HStandardChartLine (String name, DColor color) : base(name, color)
 		{
 			points = new List<Point> ();
 		}
@@ -60,7 +60,7 @@ namespace HDemografiSim
 		{
 			float output = 0;
 			foreach (Point p in points)
-				output = Math.Max (p.x, output);
+				output = Math.Max (p.y, output);
 			return output;
 		}
 	}

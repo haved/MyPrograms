@@ -21,11 +21,11 @@ namespace HDemografiSim
 			};
 			window.ModifyBg (StateType.Normal, new Gdk.Color (100, 255, 140));
 
-			populationLine = new HStandardChartLine ("Population", new Gdk.Color(100, 255, 140));
-			populationLine.AddPoint (0, 2);
+			populationLine = new HStandardChartLine ("Population", new DColor(100, 140, 255));
+			populationLine.AddPoint (0, 0);
 			populationLine.AddPoint (1, 2.2f);
 			populationLine.AddPoint (3, 3);
-			populationLine.AddPoint (5, 4.2f);
+			populationLine.AddPoint (5, 6);
 
 			populationChart = new HChart ("Population chart", populationLine);
 
