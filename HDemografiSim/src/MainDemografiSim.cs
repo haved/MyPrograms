@@ -48,14 +48,20 @@ namespace HDemografiSim
 			populationRatesBox.Add (populationChart);
 			populationRatesBox.Add (rateChart);
 
-
 			ageDistribution = new HIndexedChartLine ("Age Distribution", new DColor(250, 100, 255));
-			populationLine.AddPoints (50, 52, 65, 67, 70, 80, 75, 82, 90, 98, 100, 93, 85, 40, 12, 5, 2, 1);
+			ageDistribution.AddPoints (50, 52, 65, 67, 70, 80, 75, 82, 90, 98, 100, 93, 85, 40, 12, 5, 2, 1);
 
 			ageDistributionChart = new HChart ("Age chart", ageDistribution);
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
-			deathRate.AddPoints (0.5f, 1.2f, 1.4f, 1.6f, 1.3f, 1.6f, 2f, 2f, 2.5f, 4, 3);
+			chanceOfDeath.AddPoint (0, 0.08f);
+			chanceOfDeath.AddPoint (8, 0.01f);
+			chanceOfDeath.AddPoint (16, 0.10f);
+			chanceOfDeath.AddPoint (25, 0.03f);
+			chanceOfDeath.AddPoint (60, 0.1f);
+			chanceOfDeath.AddPoint (80, 0.2f);
+			chanceOfDeath.AddPoint (90, 0.24f);
+			chanceOfDeath.AddPoint (120, 1);
 			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath);
 
 			var ageDeathBox = new VBox (true, 10);

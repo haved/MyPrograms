@@ -1,6 +1,7 @@
 ﻿using System;
 using Gtk;
 using Cairo;
+using Pango;
 
 namespace HDemografiSim
 {
@@ -44,6 +45,25 @@ namespace HDemografiSim
 			base.OnExposeEvent (evnt);
 
 			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
+				g.Antialias = Antialias.Subpixel;
+				g.LineWidth = 9;
+
+				g.SelectFontFace("Dialog", FontSlant.Normal, FontWeight.Bold);
+				g.SetFontSize (14);
+				g.MoveTo (10, 20);
+				g.ShowText (name);
+				g.SelectFontFace("Dialog", FontSlant.Normal, FontWeight.Normal);
+				for (int i = 0; i < lines.Length; i++) {
+					g.MoveTo (10, 30 + i * 15);
+					g.LineTo (20, 30 + i * 15);
+					lines [i].UseColor (g);
+					g.Stroke ();
+					g.MoveTo (21, 35 + i * 15);
+					g.SetSourceRGB (0, 0, 0);
+					g.ShowText (lines[i].GetName());
+				}
+
+				g.Save ();
 
 				g.Scale (1, -1);
 				g.Translate (0, -evnt.Area.Height);
@@ -69,10 +89,10 @@ namespace HDemografiSim
 						g.LineTo (newX*xScale, newY*yScale);
 					}
 
-					DColor linecolor = line.GetColor ();
-					g.SetSourceRGB (linecolor.r, linecolor.g, linecolor.b);
+					line.UseColor (g);
 					g.Stroke ();
 				}
+
 				g.Restore ();
 			}
 

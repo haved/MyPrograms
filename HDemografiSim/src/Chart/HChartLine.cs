@@ -29,6 +29,11 @@ namespace HDemografiSim
 			return color;
 		}
 
+		public void UseColor(Cairo.Context g)
+		{
+			g.SetSourceRGB (color.r, color.g, color.b);
+		}
+
 		public DColor GetFillColor()
 		{
 			return fillColor;
