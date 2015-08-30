@@ -1,7 +1,6 @@
 ﻿using System;
 using Gtk;
 using Cairo;
-using Pango;
 
 namespace HDemografiSim
 {

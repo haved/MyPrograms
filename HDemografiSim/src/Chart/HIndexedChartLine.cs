@@ -25,6 +25,13 @@ namespace HDemografiSim
 				AddPoint (f);
 		}
 
+		public void InsertPoint(int index, float value)
+		{
+			if (value > biggestYValue)
+				biggestYValue = value;
+			values.Insert (index, value);
+		}
+
 		public void RemovePoint(int index)
 		{
 			if (values [index] >= biggestYValue)
@@ -37,6 +44,25 @@ namespace HDemografiSim
 			for (int i = values.Count - 1; i >= index; i--)
 				values.RemoveAt (i);
 			UpdateBiggestYValue ();
+		}
+
+		/**<summary> Removes all the points at the end with a value of less than 1. Updates the biggest y value afterwards. </summary>*/
+		public void RemoveEmptyEnd()
+		{
+			while (values.Count > 0 && (int)values [values.Count - 1] <= 0) {
+				values.RemoveAt (values.Count - 1);
+			}
+			UpdateBiggestYValue ();
+			/*if(values[values.Count-1] <= 0)
+			{
+				values.Remove (values.Count - 1);
+				RemoveEmptyEnd (); //Recursive!
+			}*/
+		}
+
+		public void GhostChangePoint(int index, float y)
+		{
+			values [index] = y;
 		}
 
 		public void ChangePoint(int index, float y)
@@ -56,6 +82,16 @@ namespace HDemografiSim
 		public override int GetPointCount ()
 		{
 			return values.Count;
+		}
+
+		public float GetValue(int index)
+		{
+			return values [index];
+		}
+
+		public float GetValueOfLastPoint()
+		{
+			return values [values.Count - 1];
 		}
 
 		public override void GetPointPos (int index, out float x, out float y)

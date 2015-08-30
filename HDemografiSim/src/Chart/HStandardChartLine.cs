@@ -40,6 +40,31 @@ namespace HDemografiSim
 			return points [index];
 		}
 
+		public float GetInterpolatedValue(float x)
+		{
+			if(points.Count <= 1){
+				if (points.Count == 0)
+					return 0;
+				else if (points.Count == 1)
+					return points [0].y;
+			}
+
+			if (x < points [0].x) //Index is smaller than the 0th element. We know we have 2.
+				return Interpolate (points[0], points [1], x);
+			
+			for (int i = 1; ; i++) {
+				if (x < points [i].x | i == points.Count-1) {
+					return Interpolate (points[i-1], points [i], x);
+				}
+			}
+		}
+
+		public static float Interpolate(Point a, Point b, float x)
+		{
+			x = (x - a.x) / (b.x - a.x);
+			return a.y * (1 - x) + b.y * x;
+		}
+
 		public override int GetPointCount()
 		{
 			return points.Count;
