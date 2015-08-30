@@ -33,17 +33,18 @@ namespace HDemografiSim
 			};
 			window.ModifyBg (StateType.Normal, new Gdk.Color (130, 130, 160));
 
+			ageDistribution = new HIndexedChartLine ("Age Distribution", new DColor(250, 100, 255));
+			ageDistribution.AddPoints (50, 52, 65, 67, 70, 80, 75, 82, 90, 98, 100, 93, 85, 40, 12, 5, 2, 1);
+			ageDistributionChart = new HChart ("Age chart", ageDistribution);
+
 			populationLine = new HIndexedChartLine ("Population", new DColor(200, 140, 255));
-			populationLine.AddPoints (200, 200);
 			populationChart = new HChart ("Population chart", populationLine);
+			RecalculatePopulation ();
 
 			birthRate = new HIndexedChartLine ("Birth rate", new DColor(100, 140, 255));
 			deathRate = new HIndexedChartLine ("Death rate", new DColor(55, 80, 180));
 			rateChart = new HChart ("Rates Chart", birthRate, deathRate);
-
-			ageDistribution = new HIndexedChartLine ("Age Distribution", new DColor(250, 100, 255));
-			ageDistribution.AddPoints (50, 52, 65, 67, 70, 80, 75, 82, 90, 98, 100, 93, 85, 40, 12, 5, 2, 1);
-			ageDistributionChart = new HChart ("Age chart", ageDistribution);
+			//RecalculateRates (0, 0, 1);
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
 			chanceOfDeath.AddPoint (0, 0.08f);

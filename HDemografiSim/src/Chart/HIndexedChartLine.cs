@@ -49,7 +49,7 @@ namespace HDemografiSim
 		/**<summary> Removes all the points at the end with a value of less than 1. Updates the biggest y value afterwards. </summary>*/
 		public void RemoveEmptyEnd()
 		{
-			while (values.Count > 0 && (int)values [values.Count - 1] <= 0) {
+			while (values.Count > 0 && values [values.Count - 1] <= 0) {
 				values.RemoveAt (values.Count - 1);
 			}
 			UpdateBiggestYValue ();
