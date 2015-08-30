@@ -49,7 +49,7 @@ namespace HDemografiSim
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
 			chanceOfDeath.AddPoint (0, 0.08f);
 			chanceOfDeath.AddPoint (8, 0.01f);
-			chanceOfDeath.AddPoint (16, 0.10f);
+			chanceOfDeath.AddPoint (16, 0.05f);
 			chanceOfDeath.AddPoint (25, 0.03f);
 			chanceOfDeath.AddPoint (60, 0.1f);
 			chanceOfDeath.AddPoint (80, 0.2f);
@@ -96,14 +96,6 @@ namespace HDemografiSim
 
 			window.Add (everythingBox);
 			window.ShowAll ();
-
-			var testLine = new HStandardChartLine ("test", new DColor (0, 0, 0));
-			testLine.AddPoint (2, 2);
-			testLine.AddPoint (3, 3);
-			testLine.AddPoint (5, 6);
-			for (int i = 0; i < 6; i++) {
-				Console.WriteLine ("x: {0}, interpolated:{1}", i, testLine.GetInterpolatedValue (i));
-			}
 		}
 
 		public void PrevYear()
@@ -116,12 +108,12 @@ namespace HDemografiSim
 			float prevPopulation = populationLine.GetValueOfLastPoint ();
 			//People die
 			float deaths = KillSome(); //Doesn't update any charts. Happens later.
-
-			Console.Out.WriteLine ("prevPopulation: {0}, deaths: {1}", prevPopulation, deaths);
+			float births = CalculateBirths();
+			Console.Out.WriteLine ("prevPopulation: {0}, births: {1}, deaths: {2}, maxAge: {3}", prevPopulation, births, deaths, ageDistribution.GetPointCount());
 
 			//People are born and everyone age to make space for the young'ns
-			AgeEveryone (50); //Updates the age chart
-			RecalculateRates(deaths, 50, prevPopulation); //Updates the rate chart
+			AgeEveryone (births); //Updates the age chart
+			RecalculateRates(births, deaths, prevPopulation); //Updates the rate chart
 			RecalculatePopulation(); //Updates the population chart
 		}
 
@@ -137,6 +129,15 @@ namespace HDemografiSim
 			return deaths;
 		}
 
+		const int MIN_FERTILE_AGE = 15;
+		const int MAX_FERTILE_AGE = 49;
+		const int FERTILE_AGE_COUNT = MAX_FERTILE_AGE - MIN_FERTILE_AGE + 1;
+		const float PERCENT_WOMEN = 0.5f;
+		float CalculateBirths()
+		{
+			return (float)(ageDistribution.GetSumOfValuesBetween (MIN_FERTILE_AGE, MAX_FERTILE_AGE) * PERCENT_WOMEN * fertilitySpinner.Value / FERTILE_AGE_COUNT);
+		}
+
 		void AgeEveryone(float newborns)
 		{
 			ageDistribution.InsertPoint (0, newborns);
@@ -145,21 +146,17 @@ namespace HDemografiSim
 			ageDistributionChart.QueueDraw ();
 		}
 
-		void RecalculateRates(float deaths, float births, float prevPopulation)
+		void RecalculateRates(float births, float deaths, float prevPopulation)
 		{
-			deathRate.AddPoint (deaths / prevPopulation * 1000);
 			birthRate.AddPoint (births / prevPopulation * 1000);
+			deathRate.AddPoint (deaths / prevPopulation * 1000);
 			rateChart.UpdateScale ();
 			rateChart.QueueDraw ();
 		}
 
 		void RecalculatePopulation()
 		{
-			float totalPop = 0;
-			for (int i = 0; i < ageDistribution.GetPointCount (); i++) {
-				totalPop += ageDistribution.GetValue (i);
-			}
-			populationLine.AddPoint (totalPop);
+			populationLine.AddPoint ((int)ageDistribution.GetSumOfValues ());
 			populationChart.UpdateScale ();
 			populationChart.QueueDraw ();
 		}

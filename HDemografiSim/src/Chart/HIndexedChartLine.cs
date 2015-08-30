@@ -49,7 +49,7 @@ namespace HDemografiSim
 		/**<summary> Removes all the points at the end with a value of less than 1. Updates the biggest y value afterwards. </summary>*/
 		public void RemoveEmptyEnd()
 		{
-			while (values.Count > 0 && values [values.Count - 1] <= 0) {
+			while (values.Count > 0 && values [values.Count - 1] <= 1) {
 				values.RemoveAt (values.Count - 1);
 			}
 			UpdateBiggestYValue ();
@@ -92,6 +92,23 @@ namespace HDemografiSim
 		public float GetValueOfLastPoint()
 		{
 			return values [values.Count - 1];
+		}
+
+		public float GetSumOfValues()
+		{
+			float output = 0;
+			foreach (float f in values)
+				output += f;
+
+			return output;
+		}
+
+		public float GetSumOfValuesBetween(int min, int max)
+		{
+			float output = 0;
+			for (int i = min; i <= max & i<values.Count; i++)
+				output += values [i];
+			return output;
 		}
 
 		public override void GetPointPos (int index, out float x, out float y)
