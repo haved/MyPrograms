@@ -54,7 +54,8 @@ namespace HDemografiSim
 			chanceOfDeath.AddPoint (60, 0.1f);
 			chanceOfDeath.AddPoint (80, 0.2f);
 			chanceOfDeath.AddPoint (90, 0.24f);
-			chanceOfDeath.AddPoint (120, 1);
+			chanceOfDeath.AddPoint (119, 0.24f);
+			chanceOfDeath.AddPoint (120, 0.4f);
 			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath);
 
 			var charts = new Table (2, 2, true);
@@ -141,7 +142,9 @@ namespace HDemografiSim
 		void AgeEveryone(float newborns)
 		{
 			ageDistribution.InsertPoint (0, newborns);
-			ageDistribution.RemoveEmptyEnd ();
+			if (ageDistribution.GetPointCount () > (int)chanceOfDeath.GetBiggestXValue ()) {
+				ageDistribution.RemovePointAndAfter ((int)chanceOfDeath.GetBiggestXValue()+1);
+			}
 			ageDistributionChart.UpdateScale ();
 			ageDistributionChart.QueueDraw ();
 		}
