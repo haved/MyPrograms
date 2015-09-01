@@ -8,12 +8,13 @@ namespace HDemografiSim
 	public class HChart : DrawingArea
 	{
 		const float numberSizeX = 60;
+		const float numberSizeY = 30;
 
 		String name;
 		HChartLine[] lines;
 
 		float xSize, ySize;
-		float numbersX = 0;
+		float numbersX, numbersY;
 
 		public HChart (String name, params HChartLine[] lines)
 		{
@@ -31,8 +32,6 @@ namespace HDemografiSim
 				xSize = Math.Max (line.GetBiggestXValue (), xSize);
 				ySize = Math.Max (line.GetBiggestYValue (), ySize);
 			}
-			xSize *= Allocation.Width / (Allocation.Width-numberSpacingXRight);
-			ySize *= 1.15f;
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton ev)
@@ -43,9 +42,12 @@ namespace HDemografiSim
 		}
 
 		const float referenceLineColor = 0.7f;
-		const float numberSpacingXLeft = 12;
+		const float numberSpacingXLeft = 20;
 		const float numberSpacingXRight = 12;
-		const float numberSpacingXTotal = numberSpacingXLeft * 2;
+		const float numberSpacingXTotal = numberSpacingXLeft + numberSpacingXRight;
+		const float numberSpacingYUp = 12;
+		const float numberSpacingYDown = 17;
+		const float numberSpacingYTotal = numberSpacingYUp + numberSpacingYDown;
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			base.OnExposeEvent (evnt);
@@ -59,11 +61,21 @@ namespace HDemografiSim
 
 					for (int i = 0; i <= numbersX; i++) {
 						float actualLoc = i * (evnt.Area.Width - numberSpacingXTotal) / numbersX + numberSpacingXLeft;
-						String text = ((actualLoc * xSize / evnt.Area.Width)).ToString ("0.0");
+						String text = (i*xSize/numbersX).ToString ("0.0");
 						g.MoveTo (actualLoc - g.TextExtents (text).Width / 2, evnt.Area.Height - 5);
 						g.ShowText (text);
-						g.MoveTo (actualLoc, evnt.Area.Height - 17);
+						g.MoveTo (actualLoc, evnt.Area.Height - numberSpacingYDown);
 						g.LineTo (actualLoc, 0);
+						g.Stroke ();
+					}
+
+					for (int i = 0; i <= numbersY; i++) {
+						float actualLoc = (1 - i/numbersY) * (evnt.Area.Height - numberSpacingYTotal) + numberSpacingYUp;
+						String text = (i*ySize/numbersY).ToString ("0.0");
+						g.MoveTo (5, actualLoc + g.TextExtents (text).Height / 2);
+						g.ShowText (text);
+						g.MoveTo (numberSpacingXLeft, actualLoc);
+						g.LineTo (evnt.Area.Width, actualLoc);
 						g.Stroke ();
 					}
 				} {
@@ -86,10 +98,10 @@ namespace HDemografiSim
 				}
 				g.Save (); {
 					g.Scale (1, -1); //Draw the lines themself.
-					g.Translate (0, -evnt.Area.Height);
+					g.Translate (numberSpacingXLeft, -evnt.Area.Height + numberSpacingYDown);
 
-					float xScale = evnt.Area.Width / xSize;
-					float yScale = evnt.Area.Height / ySize;
+					float xScale = (evnt.Area.Width-numberSpacingXTotal) / xSize;
+					float yScale = (evnt.Area.Height-numberSpacingYTotal) / ySize;
 
 					g.Antialias = Antialias.Subpixel;
 					g.LineWidth = 4;
@@ -124,6 +136,7 @@ namespace HDemografiSim
 			base.OnSizeAllocated (allocation);
 			UpdateScale ();
 			numbersX = (int)((allocation.Width-numberSpacingXTotal) / numberSizeX)+1;
+			numbersY = (int)((allocation.Height-numberSpacingYTotal) / numberSizeY)+1;
 		}
 
 		protected override void OnSizeRequested (ref Requisition requisition)

@@ -44,7 +44,8 @@ namespace HDemografiSim
 			birthRate = new HIndexedChartLine ("Birth rate", new DColor(100, 140, 255));
 			deathRate = new HIndexedChartLine ("Death rate", new DColor(55, 80, 180));
 			rateChart = new HChart ("Rates Chart", birthRate, deathRate);
-			//RecalculateRates (0, 0, 1);
+			//RecalculateRates (0, 2, 1000);
+			//RecalculateRates (0, 2, 1000);
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
 			chanceOfDeath.AddPoint (0, 0.08f);
