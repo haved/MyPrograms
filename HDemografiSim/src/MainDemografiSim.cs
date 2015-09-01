@@ -7,6 +7,8 @@ namespace HDemografiSim
 	{
 		public static MainDemograftSim Instance;
 
+		static readonly float[] defaultAgeDistribution5_1000 = {135, 145, 154, 150, 140, 145, 160, 173, 170, 160, 150, 140, 130, 100, 80, 78, 68, 70};
+
 		Window window;
 
 		HIndexedChartLine populationLine;
@@ -34,8 +36,9 @@ namespace HDemografiSim
 			window.ModifyBg (StateType.Normal, new Gdk.Color (130, 130, 160));
 
 			ageDistribution = new HIndexedChartLine ("Age Distribution", new DColor(250, 100, 255));
-			ageDistribution.AddPoints (50, 52, 65, 67, 70, 80, 75, 82, 90, 98, 100, 93, 85, 40, 12, 5, 2, 1);
+			ageDistribution.AddPoints ();
 			ageDistributionChart = new HChart ("Age chart", ageDistribution);
+			AddDefaultToAgeDist ();
 
 			populationLine = new HIndexedChartLine ("Population", new DColor(200, 140, 255));
 			populationChart = new HChart ("Population chart", populationLine);
@@ -49,15 +52,17 @@ namespace HDemografiSim
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
 			chanceOfDeath.AddPoint (0, 0.08f);
-			chanceOfDeath.AddPoint (8, 0.01f);
+			chanceOfDeath.AddPoint (4, 0.03f);
+			chanceOfDeath.AddPoint (8, 0.03f);
 			chanceOfDeath.AddPoint (16, 0.05f);
 			chanceOfDeath.AddPoint (25, 0.03f);
-			chanceOfDeath.AddPoint (60, 0.1f);
-			chanceOfDeath.AddPoint (80, 0.2f);
-			chanceOfDeath.AddPoint (90, 0.24f);
-			chanceOfDeath.AddPoint (119, 0.24f);
-			chanceOfDeath.AddPoint (120, 0.4f);
+			chanceOfDeath.AddPoint (60, 0.012f);
+			chanceOfDeath.AddPoint (80, 0.018f);
+			chanceOfDeath.AddPoint (90, 0.2f);
+			chanceOfDeath.AddPoint (119, 0.22f);
+			chanceOfDeath.AddPoint (120, 0.25f);
 			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath);
+			ExpandAgeDistToDeathChart ();
 
 			var charts = new Table (2, 2, true);
 			charts.SetRowSpacing (0, 10);
@@ -100,6 +105,12 @@ namespace HDemografiSim
 			window.ShowAll ();
 		}
 
+		void AddDefaultToAgeDist()
+		{
+			for (int i = 0; i < defaultAgeDistribution5_1000.Length * 5; i++)
+				ageDistribution.AddPoint (defaultAgeDistribution5_1000 [i / 5] * 1000);
+		}
+
 		public void PrevYear()
 		{
 
@@ -111,7 +122,6 @@ namespace HDemografiSim
 			//People die
 			float deaths = KillSome(); //Doesn't update any charts. Happens later.
 			float births = CalculateBirths();
-			Console.Out.WriteLine ("prevPopulation: {0}, births: {1}, deaths: {2}, maxAge: {3}", prevPopulation, births, deaths, ageDistribution.GetPointCount());
 
 			//People are born and everyone age to make space for the young'ns
 			AgeEveryone (births); //Updates the age chart
@@ -137,7 +147,18 @@ namespace HDemografiSim
 		const float PERCENT_WOMEN = 0.5f;
 		float CalculateBirths()
 		{
-			return (float)(ageDistribution.GetSumOfValuesBetween (MIN_FERTILE_AGE, MAX_FERTILE_AGE) * PERCENT_WOMEN * fertilitySpinner.Value / FERTILE_AGE_COUNT);
+			float fertilePeople = ageDistribution.GetSumOfValuesBetween (MIN_FERTILE_AGE, MAX_FERTILE_AGE);
+			float fertileWomen = fertilePeople * PERCENT_WOMEN;
+			float childrenFromTheseWomen = fertileWomen * (float)fertilitySpinner.Value;
+			float births = childrenFromTheseWomen / FERTILE_AGE_COUNT;
+
+			return births;
+		}
+
+		void ExpandAgeDistToDeathChart()
+		{
+			for (int i = (int)chanceOfDeath.GetBiggestXValue () - ageDistribution.GetPointCount (); i > 0; i--)
+				ageDistribution.AddPoint (0);
 		}
 
 		void AgeEveryone(float newborns)
