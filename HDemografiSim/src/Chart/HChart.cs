@@ -42,7 +42,7 @@ namespace HDemografiSim
 		}
 
 		const float referenceLineColor = 0.7f;
-		const float numberSpacingXLeft = 20;
+		const float numberSpacingXLeft = 30;
 		const float numberSpacingXRight = 12;
 		const float numberSpacingXTotal = numberSpacingXLeft + numberSpacingXRight;
 		const float numberSpacingYUp = 12;
@@ -72,7 +72,8 @@ namespace HDemografiSim
 					for (int i = 0; i <= numbersY; i++) {
 						float actualLoc = (1 - i/numbersY) * (evnt.Area.Height - numberSpacingYTotal) + numberSpacingYUp;
 						String text = (i*ySize/numbersY).ToString ("0.0");
-						g.MoveTo (5, actualLoc + g.TextExtents (text).Height / 2);
+						TextExtents size = g.TextExtents (text);
+						g.MoveTo (Math.Max(numberSpacingXLeft-size.Width, 0), actualLoc + size.Height / 2);
 						g.ShowText (text);
 						g.MoveTo (numberSpacingXLeft, actualLoc);
 						g.LineTo (evnt.Area.Width, actualLoc);
@@ -81,18 +82,18 @@ namespace HDemografiSim
 				} {
 					g.SelectFontFace ("Sans", FontSlant.Normal, FontWeight.Bold); //Draw the title and line names/colors.
 					g.SetFontSize (14);
-					g.SetSourceRGB (0, 0, 0);
-					g.MoveTo (10, 20);
+					g.SetSourceRGBA (0, 0, 0, 0.5f);
+					g.MoveTo (numberSpacingXLeft+15, numberSpacingYUp+7);
 					g.ShowText (name);
 					g.SelectFontFace ("Sans", FontSlant.Normal, FontWeight.Normal);
 					g.LineWidth = 11;
 					for (int i = 0; i < lines.Length; i++) {
-						g.MoveTo (10, 30 + i * 15);
-						g.LineTo (20, 30 + i * 15);
+						g.MoveTo (numberSpacingXLeft+15, numberSpacingYUp+15 + i * 15);
+						g.LineTo (numberSpacingXLeft+25, numberSpacingYUp+15 + i * 15);
 						lines [i].UseColor (g);
 						g.Stroke ();
-						g.MoveTo (21, 35 + i * 15);
-						g.SetSourceRGB (0, 0, 0);
+						g.MoveTo (numberSpacingXLeft+26, numberSpacingYUp+20 + i * 15);
+						g.SetSourceRGBA (0, 0, 0, 0.5f);
 						g.ShowText (lines [i].GetName ());
 					}
 				}
