@@ -51,16 +51,16 @@ namespace HDemografiSim
 			//RecalculateRates (0, 2, 1000);
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
-			chanceOfDeath.AddPoint (0, 0.08f);
-			chanceOfDeath.AddPoint (4, 0.03f);
-			chanceOfDeath.AddPoint (8, 0.03f);
-			chanceOfDeath.AddPoint (16, 0.05f);
-			chanceOfDeath.AddPoint (25, 0.03f);
-			chanceOfDeath.AddPoint (60, 0.012f);
-			chanceOfDeath.AddPoint (80, 0.018f);
-			chanceOfDeath.AddPoint (90, 0.2f);
-			chanceOfDeath.AddPoint (119, 0.22f);
-			chanceOfDeath.AddPoint (120, 0.25f);
+			chanceOfDeath.AddPoint (0, 0.008f);
+			chanceOfDeath.AddPoint (4, 0.003f);
+			chanceOfDeath.AddPoint (8, 0.003f);
+			chanceOfDeath.AddPoint (16, 0.005f);
+			chanceOfDeath.AddPoint (25, 0.003f);
+			chanceOfDeath.AddPoint (60, 0.006f);
+			chanceOfDeath.AddPoint (80, 0.01f);
+			chanceOfDeath.AddPoint (90, 0.03f);
+			chanceOfDeath.AddPoint (119, 0.4f);
+			chanceOfDeath.AddPoint (120, 0f);
 			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath);
 			ExpandAgeDistToDeathChart ();
 
@@ -78,6 +78,8 @@ namespace HDemografiSim
 			nextYear.Clicked += (sender, e) => NextYear ();
 			var delYears = new Button ("Delete Years");
 			delYears.Clicked += (sender, e) => DeleteYears ();
+			var traceCharts = new Button ("Tace age distribution");
+			traceCharts.Clicked += (sender, e) => TraceCharts ();
 			var fertilityRateLabel = new Label ("Fertility rate:");
 			fertilityRateLabel.ModifyFont(Pango.FontDescription.FromString("Sans 12"));
 			fertilitySpinner = new SpinButton (0, 100, 0.1f);
@@ -90,12 +92,13 @@ namespace HDemografiSim
 			fertilitySettings.Add (fertilityRateLabel);
 			fertilitySettings.Add (fertilitySpinner);
 
-			var bottomBar = new Table (1, 5, false);
+			var bottomBar = new Table (1, 6, false);
 			bottomBar.SetSizeRequest (-1, 30);
 			bottomBar.Attach (prevYear, 0, 1, 0, 1);
 			bottomBar.Attach (nextYear, 1, 2, 0, 1);
 			bottomBar.Attach (delYears, 2, 3, 0, 1);
-			bottomBar.Attach (fertilitySettings, 3, 5, 0, 1);
+			bottomBar.Attach (traceCharts, 3, 4, 0, 1);
+			bottomBar.Attach (fertilitySettings, 4, 6, 0, 1);
 
 			var everythingBox = new VBox (false, 1);
 			everythingBox.PackStart (charts, true, true, 0);
@@ -108,7 +111,7 @@ namespace HDemografiSim
 		void AddDefaultToAgeDist()
 		{
 			for (int i = 0; i < defaultAgeDistribution5_1000.Length * 5; i++)
-				ageDistribution.AddPoint (defaultAgeDistribution5_1000 [i / 5] * 1000);
+				ageDistribution.AddPoint (defaultAgeDistribution5_1000 [i / 5] * 1000 / 5 * 2);
 		}
 
 		public void PrevYear()
@@ -184,6 +187,22 @@ namespace HDemografiSim
 			populationLine.AddPoint ((int)ageDistribution.GetSumOfValues ());
 			populationChart.UpdateScale ();
 			populationChart.QueueDraw ();
+		}
+
+		public void TraceCharts()
+		{
+			bool removed = false;
+			if (ageDistributionChart.GetLineCount () > 1)
+				for (int i = 0; i < ageDistributionChart.GetLineCount (); i++)
+					if (ageDistributionChart.GetLineAt (i).GetName ().StartsWith ("traced", StringComparison.Ordinal)) {
+						ageDistributionChart.RemoveLineAt (i);
+						removed = true;
+					}
+
+			if (!removed)
+				ageDistributionChart.AddLine (new HIndexedChartLine (ageDistribution, "traced - " + ageDistribution.GetName(), ageDistribution.GetColor().HalfTransparent()));
+
+			ageDistributionChart.QueueDraw ();
 		}
 
 		public void DeleteYears()

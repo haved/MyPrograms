@@ -5,15 +5,15 @@ namespace HDemografiSim
 {
 	public abstract class HChartLine
 	{
-		protected DColor fillColor;
-		protected DColor color;
-		protected String name;
+		protected DColor FillColor;
+		protected DColor Color;
+		protected String Name;
 
 		protected HChartLine (String name, DColor color)
 		{
-			this.name = name;
-			this.color = color;
-			fillColor = new DColor(color.r*1.3f, color.g*1.3f, color.b*1.3f);
+			Name = name;
+			Color = color;
+			FillColor = new DColor(color.R*1.3f, color.G*1.3f, color.B*1.3f);
 		}
 
 		public abstract int GetPointCount();
@@ -26,22 +26,22 @@ namespace HDemografiSim
 
 		public DColor GetColor()
 		{
-			return color;
+			return Color;
 		}
 
 		public void UseColor(Cairo.Context g)
 		{
-			g.SetSourceRGB (color.r, color.g, color.b);
+			g.SetSourceRGBA (Color.R, Color.G, Color.B, Color.A);
 		}
 
 		public DColor GetFillColor()
 		{
-			return fillColor;
+			return FillColor;
 		}
 
 		public String GetName()
 		{
-			return name;
+			return Name;
 		}
 	}
 }

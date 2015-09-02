@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Gtk;
 using Cairo;
 
@@ -11,7 +12,7 @@ namespace HDemografiSim
 		const float numberSizeY = 30;
 
 		String name;
-		HChartLine[] lines;
+		List<HChartLine> lines;
 
 		float xSize, ySize;
 		float numbersX, numbersY;
@@ -19,15 +20,42 @@ namespace HDemografiSim
 		public HChart (String name, params HChartLine[] lines)
 		{
 			this.name = name;
-			this.lines = lines;
+			this.lines = new List<HChartLine>(lines);
 
 			ModifyBg (StateType.Normal, new Gdk.Color (230, 230, 230));
 		}
 
-		public void UpdateScale()
+		public int GetLineCount()
+		{
+			return lines.Count;
+		}
+
+		public HChartLine GetLineAt(int index)
+		{
+			return lines [index];
+		}
+
+		public void AddLine(HChartLine line)
+		{
+			lines.Add (line);
+		}
+
+		public void RemoveLineAt(int index)
+		{
+			lines.RemoveAt (index);
+		}
+
+		public void ResetScale()
 		{
 			xSize = 0;
 			ySize = 0;
+			UpdateScale ();
+		}
+
+		public void UpdateScale()
+		{
+			//xSize = 0;
+			//ySize = 0;
 			foreach (HChartLine line in lines) {
 				xSize = Math.Max (line.GetBiggestXValue (), xSize);
 				ySize = Math.Max (line.GetBiggestYValue (), ySize);
@@ -87,7 +115,7 @@ namespace HDemografiSim
 					g.ShowText (name);
 					g.SelectFontFace ("Sans", FontSlant.Normal, FontWeight.Normal);
 					g.LineWidth = 11;
-					for (int i = 0; i < lines.Length; i++) {
+					for (int i = 0; i < lines.Count; i++) {
 						g.MoveTo (numberSpacingXLeft+15, numberSpacingYUp+15 + i * 15);
 						g.LineTo (numberSpacingXLeft+25, numberSpacingYUp+15 + i * 15);
 						lines [i].UseColor (g);

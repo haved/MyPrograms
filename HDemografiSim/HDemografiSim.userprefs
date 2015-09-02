@@ -1,4 +1,4 @@
-﻿<Properties StartupItem="HDemografiSim.csproj">
+﻿<Properties StartupItem="HDemografiSim.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.Workbench ActiveDocument="src\Chart\HChart.cs">
     <Files>

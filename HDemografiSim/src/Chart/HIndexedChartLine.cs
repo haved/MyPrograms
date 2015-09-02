@@ -6,10 +6,17 @@ namespace HDemografiSim
 	public class HIndexedChartLine : HChartLine
 	{
 		readonly List<Single> values;
+		float biggestYValue;
 
 		public HIndexedChartLine (String name, DColor color) : base(name, color)
 		{
 			values = new List<Single> ();
+		}
+
+		public HIndexedChartLine(HIndexedChartLine copy, String name, DColor color) : base(name, color)
+		{
+			values = new List<Single> (copy.values);
+			biggestYValue = copy.biggestYValue;
 		}
 
 		public void AddPoint(float y)
@@ -71,7 +78,6 @@ namespace HDemografiSim
 			UpdateBiggestYValue ();
 		}
 
-		float biggestYValue;
 		public void UpdateBiggestYValue()
 		{
 			biggestYValue = 0;
