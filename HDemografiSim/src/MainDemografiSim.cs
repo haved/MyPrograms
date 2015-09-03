@@ -63,7 +63,7 @@ namespace HDemografiSim
 			chanceOfDeath.AddPoint (119, 0.4f);
 			chanceOfDeath.AddPoint (120, 0f);
 			how1000PeopleDie = new HIndexedChartLine ("How 1000 people die", new DColor (255, 20, 40));
-			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath, how1000PeopleDie);
+			chanceOfDeathChart = new HDoubleChart ("Death Chart", new HChartLine[]{how1000PeopleDie}, chanceOfDeath);
 			OnChanceOfDeathUpdated ();
 
 			var charts = new Table (2, 2, true);
@@ -84,8 +84,8 @@ namespace HDemografiSim
 			traceCharts.Clicked += (sender, e) => TraceCharts ();
 			var fertilityRateLabel = new Label ("Fertility rate:");
 			fertilityRateLabel.ModifyFont(Pango.FontDescription.FromString("Sans 12"));
-			fertilitySpinner = new SpinButton (0, 100, 0.1f);
-			fertilitySpinner.Value = 2.100f;
+			fertilitySpinner = new SpinButton (0, 100, 0.01f);
+			fertilitySpinner.Value = 2.1f;
 			fertilitySpinner.SnapToTicks = false;
 
 			var fertilitySettings = new HBox (false, 1);

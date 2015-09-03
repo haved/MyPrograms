@@ -59,6 +59,7 @@
     <Compile Include="src\MainDemografiSim.cs" />
     <Compile Include="src\DColor.cs" />
     <Compile Include="src\Chart\HIndexedChartLine.cs" />
+    <Compile Include="src\Chart\HDoubleChart.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
