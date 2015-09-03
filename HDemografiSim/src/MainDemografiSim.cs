@@ -22,6 +22,7 @@ namespace HDemografiSim
 		HChart ageDistributionChart;
 
 		HStandardChartLine chanceOfDeath;
+		HIndexedChartLine how1000PeopleDie;
 		HChart chanceOfDeathChart;
 
 		SpinButton fertilitySpinner;
@@ -61,8 +62,9 @@ namespace HDemografiSim
 			chanceOfDeath.AddPoint (90, 0.03f);
 			chanceOfDeath.AddPoint (119, 0.4f);
 			chanceOfDeath.AddPoint (120, 0f);
-			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath);
-			ExpandAgeDistToDeathChart ();
+			how1000PeopleDie = new HIndexedChartLine ("How 1000 people die", new DColor (255, 20, 40));
+			chanceOfDeathChart = new HChart ("Death Chart", chanceOfDeath, how1000PeopleDie);
+			OnChanceOfDeathUpdated ();
 
 			var charts = new Table (2, 2, true);
 			charts.SetRowSpacing (0, 10);
@@ -136,7 +138,7 @@ namespace HDemografiSim
 		{
 			float deaths = 0;
 			for (int i = 0; i < ageDistribution.GetPointCount (); i++) {
-				float loss = chanceOfDeath.GetInterpolatedValue (i)*ageDistribution.GetValue(i);
+				float loss = GetLossOfPeopleOfAge(ageDistribution.GetValue(i), i);
 				ageDistribution.GhostChangePoint (i, ageDistribution.GetValue (i) - loss);
 				deaths += loss;
 			}
@@ -144,8 +146,13 @@ namespace HDemografiSim
 			return deaths;
 		}
 
+		float GetLossOfPeopleOfAge(float people, int age)
+		{
+			return chanceOfDeath.GetInterpolatedValue (age) * people;
+		}
+
 		const int MIN_FERTILE_AGE = 15;
-		const int MAX_FERTILE_AGE = 49;
+		const int MAX_FERTILE_AGE = 49; //49;
 		const int FERTILE_AGE_COUNT = MAX_FERTILE_AGE - MIN_FERTILE_AGE + 1;
 		const float PERCENT_WOMEN = 0.5f;
 		float CalculateBirths()
@@ -158,10 +165,24 @@ namespace HDemografiSim
 			return births;
 		}
 
-		void ExpandAgeDistToDeathChart()
+		void OnChanceOfDeathUpdated()
 		{
 			for (int i = (int)chanceOfDeath.GetBiggestXValue () - ageDistribution.GetPointCount (); i > 0; i--)
 				ageDistribution.AddPoint (0);
+
+			how1000PeopleDie.RemovePointAndAfter (0);
+			for(int i = 0; i < chanceOfDeath.GetBiggestXValue(); i++)
+			{
+				for (int j = 0; j < i; j++) {
+					float oldPop = how1000PeopleDie.GetValue (j);
+					how1000PeopleDie.GhostChangePoint(j,oldPop-GetLossOfPeopleOfAge(oldPop,j));
+				}
+				how1000PeopleDie.InsertPoint (0, 1000);
+
+				how1000PeopleDie.UpdateBiggestYValue ();
+			}
+			chanceOfDeathChart.UpdateScale ();
+			chanceOfDeathChart.QueueDraw ();
 		}
 
 		void AgeEveryone(float newborns)
