@@ -7,7 +7,8 @@ namespace HDemografiSim
 	{
 		public static MainDemograftSim Instance;
 
-		static readonly float[] defaultAgeDistribution5_1000 = {135, 145, 154, 150, 140, 145, 160, 173, 170, 160, 150, 140, 130, 100, 80, 78, 68, 70};
+		static readonly float[] defaultAgeDistribution5_1000 = 
+		{150, 153, 150, 158, 166, 170, 167, 160, 175, 174, 158, 155, 145, 140, 100, 65, 15, 4};
 
 		Window window;
 
@@ -82,6 +83,8 @@ namespace HDemografiSim
 			delYears.Clicked += (sender, e) => DeleteYears ();
 			var traceCharts = new Button ("Tace age distribution");
 			traceCharts.Clicked += (sender, e) => TraceCharts ();
+			var shrinkCharts = new Button ("Shrink Charts");
+			shrinkCharts.Clicked += (sender, e) => ShrinkCharts ();
 			var fertilityRateLabel = new Label ("Fertility rate:");
 			fertilityRateLabel.ModifyFont(Pango.FontDescription.FromString("Sans 12"));
 			fertilitySpinner = new SpinButton (0, 100, 0.01f);
@@ -94,13 +97,14 @@ namespace HDemografiSim
 			fertilitySettings.Add (fertilityRateLabel);
 			fertilitySettings.Add (fertilitySpinner);
 
-			var bottomBar = new Table (1, 6, false);
+			var bottomBar = new Table (1, 7, false);
 			bottomBar.SetSizeRequest (-1, 30);
 			bottomBar.Attach (prevYear, 0, 1, 0, 1);
 			bottomBar.Attach (nextYear, 1, 2, 0, 1);
 			bottomBar.Attach (delYears, 2, 3, 0, 1);
 			bottomBar.Attach (traceCharts, 3, 4, 0, 1);
-			bottomBar.Attach (fertilitySettings, 4, 6, 0, 1);
+			bottomBar.Attach (shrinkCharts, 4, 5, 0, 1);
+			bottomBar.Attach (fertilitySettings, 5, 7, 0, 1);
 
 			var everythingBox = new VBox (false, 1);
 			everythingBox.PackStart (charts, true, true, 0);
@@ -224,6 +228,12 @@ namespace HDemografiSim
 				ageDistributionChart.AddLine (new HIndexedChartLine (ageDistribution, "traced - " + ageDistribution.GetName(), ageDistribution.GetColor().HalfTransparent()));
 
 			ageDistributionChart.QueueDraw ();
+		}
+
+		public void ShrinkCharts()
+		{
+			ageDistributionChart.ResetScale ();
+			populationChart.ResetScale ();
 		}
 
 		public void DeleteYears()
