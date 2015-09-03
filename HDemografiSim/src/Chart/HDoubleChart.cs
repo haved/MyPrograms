@@ -29,6 +29,34 @@ namespace HDemografiSim
 				SecondaryYSize = Math.Max (SecondaryYSize, line.GetBiggestYValue());
 			}
 		}
+
+		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		{
+			base.OnExposeEvent (evnt);
+
+			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
+				UseStandardLineDrawing (g);
+				DrawVerticalReferenceLines (g, evnt.Area, XSize);
+				DrawHorizontalReferenceLines (g, evnt.Area, YSize);
+				DrawRightsideHorisontalNumbers (g, evnt.Area, SecondaryYSize);
+
+				DrawTitle (g, Name);
+				int i;
+				for (i = 0; i < Lines.Count; i++) {
+					DrawLineInfo (g, Lines [i], i);
+				}
+				for (int j = 0; j < secondaryLines.Count; j++) {
+					DrawLineInfo (g, secondaryLines [j], i);
+					i++;
+				}
+
+				TransformForLineDrawing (g, evnt.Area);
+				DrawLines (g, evnt.Area, Lines, XSize, YSize);
+				DrawLines (g, evnt.Area, secondaryLines, XSize, SecondaryYSize);
+			}
+
+			return true;
+		}
 	}
 }
 

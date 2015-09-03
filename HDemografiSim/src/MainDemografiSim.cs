@@ -52,12 +52,12 @@ namespace HDemografiSim
 			//RecalculateRates (0, 2, 1000);
 
 			chanceOfDeath = new HStandardChartLine ("Chance of death", new DColor(255, 80, 180));
-			chanceOfDeath.AddPoint (0, 0.008f);
-			chanceOfDeath.AddPoint (4, 0.003f);
-			chanceOfDeath.AddPoint (8, 0.003f);
-			chanceOfDeath.AddPoint (16, 0.005f);
-			chanceOfDeath.AddPoint (25, 0.003f);
-			chanceOfDeath.AddPoint (60, 0.006f);
+			chanceOfDeath.AddPoint (0, 0.003f);
+			chanceOfDeath.AddPoint (4, 0.001f);
+			chanceOfDeath.AddPoint (8, 0.0005f);
+			chanceOfDeath.AddPoint (16, 0.001f);
+			chanceOfDeath.AddPoint (25, 0.0005f);
+			chanceOfDeath.AddPoint (60, 0.003f);
 			chanceOfDeath.AddPoint (80, 0.01f);
 			chanceOfDeath.AddPoint (90, 0.03f);
 			chanceOfDeath.AddPoint (119, 0.4f);
@@ -171,7 +171,7 @@ namespace HDemografiSim
 				ageDistribution.AddPoint (0);
 
 			how1000PeopleDie.RemovePointAndAfter (0);
-			for(int i = 0; i < chanceOfDeath.GetBiggestXValue(); i++)
+			for(int i = 0; i <= chanceOfDeath.GetBiggestXValue(); i++)
 			{
 				for (int j = 0; j < i; j++) {
 					float oldPop = how1000PeopleDie.GetValue (j);

@@ -12,8 +12,8 @@ namespace HDemografiSim
 		const float numberSizeX = 60;
 		const float numberSizeY = 30;
 
-		String name;
-		List<HChartLine> lines;
+		protected String Name;
+		protected List<HChartLine> Lines;
 
 		protected float XSize, YSize;
 		protected float NumbersX, NumbersY;
@@ -27,8 +27,8 @@ namespace HDemografiSim
 
 		public HChart (String name, params HChartLine[] lines)
 		{
-			this.name = name;
-			this.lines = new List<HChartLine>(lines);
+			this.Name = name;
+			this.Lines = new List<HChartLine>(lines);
 
 			ModifyBg (StateType.Normal, new Gdk.Color (230, 230, 230));
 		}
@@ -41,22 +41,22 @@ namespace HDemografiSim
 
 		public int GetLineCount()
 		{
-			return lines.Count;
+			return Lines.Count;
 		}
 
 		public HChartLine GetLineAt(int index)
 		{
-			return lines [index];
+			return Lines [index];
 		}
 
 		public void AddLine(HChartLine line)
 		{
-			lines.Add (line);
+			Lines.Add (line);
 		}
 
 		public void RemoveLineAt(int index)
 		{
-			lines.RemoveAt (index);
+			Lines.RemoveAt (index);
 		}
 
 		public virtual void ResetScale()
@@ -70,7 +70,7 @@ namespace HDemografiSim
 		{
 			//xSize = 0;
 			//ySize = 0;
-			foreach (HChartLine line in lines) {
+			foreach (HChartLine line in Lines) {
 				XSize = Math.Max (line.GetBiggestXValue (), XSize);
 				YSize = Math.Max (line.GetBiggestYValue (), YSize);
 			}
@@ -93,13 +93,13 @@ namespace HDemografiSim
 				DrawVerticalReferenceLines (g, evnt.Area, XSize);
 				DrawHorizontalReferenceLines (g, evnt.Area, YSize);
 
-				DrawTitle (g, name);
-				for (int i = 0; i < lines.Count; i++) {
-					DrawLineInfo (g, lines [i], i);
+				DrawTitle (g, Name);
+				for (int i = 0; i < Lines.Count; i++) {
+					DrawLineInfo (g, Lines [i], i);
 				}
 
 				TransformForLineDrawing (g, evnt.Area);
-				DrawLines (g, evnt.Area, lines, XSize, YSize);
+				DrawLines (g, evnt.Area, Lines, XSize, YSize);
 			}
 
 			return true;
