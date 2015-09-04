@@ -12,7 +12,7 @@ namespace HDemografiSim
 		const float numberSizeX = 60;
 		const float numberSizeY = 30;
 
-		protected String Name;
+		protected String ChartName;
 		protected List<HChartLine> Lines;
 
 		protected float XSize, YSize;
@@ -25,10 +25,12 @@ namespace HDemografiSim
 		protected float NumberSpacingYDown = 17;
 		float numberSpacingYTotal;
 
+		protected float XTranslation;
+
 		public HChart (String name, params HChartLine[] lines)
 		{
-			this.Name = name;
-			this.Lines = new List<HChartLine>(lines);
+			ChartName = name;
+			Lines = new List<HChartLine>(lines);
 
 			ModifyBg (StateType.Normal, new Gdk.Color (230, 230, 230));
 		}
@@ -37,6 +39,21 @@ namespace HDemografiSim
 		{
 			numberSpacingXTotal = NumberSpacingXLeft + NumberSpacingXRight;
 			numberSpacingYTotal = NumberSpacingYUp + NumberSpacingYDown;
+		}
+
+		public float GetXTranslation()
+		{
+			return XTranslation;
+		}
+
+		public void SetXTranslation(float xTrans)
+		{
+			XTranslation = xTrans;
+		}
+
+		public void AddXTranslation(float xTrans)
+		{
+			XTranslation += xTrans;
 		}
 
 		public int GetLineCount()
@@ -90,10 +107,10 @@ namespace HDemografiSim
 
 			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
 				UseStandardLineDrawing (g);
-				DrawVerticalReferenceLines (g, evnt.Area, XSize);
+				DrawVerticalReferenceLines (g, evnt.Area, XSize, XTranslation);
 				DrawHorizontalReferenceLines (g, evnt.Area, YSize);
 
-				DrawTitle (g, Name);
+				DrawTitle (g, ChartName);
 				for (int i = 0; i < Lines.Count; i++) {
 					DrawLineInfo (g, Lines [i], i);
 				}
@@ -139,11 +156,11 @@ namespace HDemografiSim
 			}
 		}
 
-		protected void DrawVerticalReferenceLines(Context g, Gdk.Rectangle area, float xSize)
+		protected void DrawVerticalReferenceLines(Context g, Gdk.Rectangle area, float xSize, float xTranslation)
 		{
 			for (int i = 0; i <= NumbersX; i++) {
 				float actualLoc = i * (area.Width - numberSpacingXTotal) / NumbersX + NumberSpacingXLeft;
-				String text = (i*xSize/NumbersX).ToString ("0.0");
+				String text = (xTranslation+i*xSize/NumbersX).ToString ("0.0");
 				g.MoveTo (actualLoc - g.TextExtents (text).Width / 2, area.Height - 5);
 				g.ShowText (text);
 				g.MoveTo (actualLoc, area.Height - NumberSpacingYDown);

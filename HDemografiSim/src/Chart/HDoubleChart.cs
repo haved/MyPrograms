@@ -36,11 +36,11 @@ namespace HDemografiSim
 
 			using (var g = Gdk.CairoHelper.Create (evnt.Window)) {
 				UseStandardLineDrawing (g);
-				DrawVerticalReferenceLines (g, evnt.Area, XSize);
+				DrawVerticalReferenceLines (g, evnt.Area, XSize, XTranslation);
 				DrawHorizontalReferenceLines (g, evnt.Area, YSize);
 				DrawRightsideHorisontalNumbers (g, evnt.Area, SecondaryYSize);
 
-				DrawTitle (g, Name);
+				DrawTitle (g, ChartName);
 				int i;
 				for (i = 0; i < Lines.Count; i++) {
 					DrawLineInfo (g, Lines [i], i);

@@ -46,6 +46,13 @@ namespace HDemografiSim
 			values.RemoveAt (index);
 		}
 
+		public void RemovePointsBefore(int index)
+		{
+			for (int i = 0; i < index; i++)
+				values.RemoveAt (i);
+			UpdateBiggestYValue ();
+		}
+
 		public void RemovePointAndAfter(int index)
 		{
 			for (int i = values.Count - 1; i >= index; i--)

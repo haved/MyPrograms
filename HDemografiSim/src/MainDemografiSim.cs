@@ -79,8 +79,8 @@ namespace HDemografiSim
 			prevYear.Clicked += (sender, e) => PrevYear ();
 			var nextYear = new Button ("Next Year");
 			nextYear.Clicked += (sender, e) => NextYear ();
-			var delYears = new Button ("Delete Years");
-			delYears.Clicked += (sender, e) => DeleteYears ();
+			var clearHistory = new Button ("Halv history");
+			clearHistory.Clicked += (sender, e) => ClearHistory ();
 			var traceCharts = new Button ("Tace age distribution");
 			traceCharts.Clicked += (sender, e) => TraceCharts ();
 			var shrinkCharts = new Button ("Shrink Charts");
@@ -97,14 +97,14 @@ namespace HDemografiSim
 			fertilitySettings.Add (fertilityRateLabel);
 			fertilitySettings.Add (fertilitySpinner);
 
-			var bottomBar = new Table (1, 7, false);
+			var bottomBar = new Table (1, 8, false);
 			bottomBar.SetSizeRequest (-1, 30);
 			bottomBar.Attach (prevYear, 0, 1, 0, 1);
 			bottomBar.Attach (nextYear, 1, 2, 0, 1);
-			bottomBar.Attach (delYears, 2, 3, 0, 1);
+			bottomBar.Attach (clearHistory, 2, 3, 0, 1);
 			bottomBar.Attach (traceCharts, 3, 4, 0, 1);
 			bottomBar.Attach (shrinkCharts, 4, 5, 0, 1);
-			bottomBar.Attach (fertilitySettings, 5, 7, 0, 1);
+			bottomBar.Attach (fertilitySettings, 5, 8, 0, 1);
 
 			var everythingBox = new VBox (false, 1);
 			everythingBox.PackStart (charts, true, true, 0);
@@ -236,9 +236,20 @@ namespace HDemografiSim
 			populationChart.ResetScale ();
 		}
 
-		public void DeleteYears()
+		public void ClearHistory()
 		{
+			int lowestPoint = populationLine.GetPointCount () / 2;
 
+			populationLine.RemovePointsBefore (lowestPoint);
+			populationChart.AddXTranslation (lowestPoint);
+			populationChart.ResetScale ();
+			populationChart.QueueDraw ();
+
+			birthRate.RemovePointsBefore (lowestPoint);
+			deathRate.RemovePointsBefore (lowestPoint);
+			rateChart.AddXTranslation (lowestPoint);
+			rateChart.ResetScale ();
+			rateChart.QueueDraw ();
 		}
 
 		public static void Main (string[] args)
