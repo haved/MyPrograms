@@ -17,18 +17,20 @@ killCommand = ["emacsclient", "-e", "(kill-emacs)"]
 emacsClientCommand = ["emacsclient", "-c"]
 
 startDaemon = True
+checkLoop = False
 
 def printHelpMessage():
     print("""
     Usage: ./emacsIndicator.py [options]
     Options:
       -s         Don't start server
+      -r         Check server status every 5 seconds
       -h         Print this help message"""[1:])
     #TODO: allow custom commands
     exit(0)
 
 def takeArgs():
-    global startDaemon
+    global startDaemon, checkLoop
 
     args = argv[1:]
     i = 0
@@ -38,6 +40,8 @@ def takeArgs():
             printHelpMessage()
         elif arg == "-s":
             startDaemon = False
+        elif arg == "-r":
+            checkLoop = True
         else:
             print("ERROR: unrecognized option: ", arg)
             exit(1)
@@ -76,9 +80,10 @@ def main():
     if not online and startDaemon:
         start_restart_option(None)
 
-    onlineChecker = Thread(target=keepCheckingOnline, args=[5]) #Checks every five seconds
-    onlineChecker.daemon = True
-    onlineChecker.start()
+    if checkLoop:
+        onlineChecker = Thread(target=keepCheckingOnline, args=[5]) #Checks every five seconds
+        onlineChecker.daemon = True
+        onlineChecker.start()
 
     Gtk.main()
 
@@ -103,7 +108,6 @@ RESTARTING = "Restarting..."
 def useRestartName(restart):
     global item_startServer
     item_startServer.set_label(RESTART if restart else START)
-
 
 def menu_build():
     global item_startServer, item_stopServer, item_startClient, item_quitButLeave
@@ -181,6 +185,10 @@ def startClient():
     global clientThreads
     if run(emacsClientCommand).returncode != 0:
         Notify.Notification.new("Failed to start client", "Something went wrong", "emacs").show()
+        prevOnline = online
+        checkIfOnline()
+        if online != prevOnline:
+            GLib.idle_add(showMenuAsOnline if online else showMenuAsOffline)
     clientThreads.remove(current_thread())
 
 from subprocess import PIPE
@@ -231,7 +239,7 @@ def launchServer():
     code = run(emacsDaemonCommand).returncode
 
     if code != 0:
-        Notify.Notification.new("Starting the Emacs server failed", "Probably a problem on your end", None).show()
+        Notify.Notification.new("Starting the Emacs server failed", "Probably a problem on your end", "emacs").show()
         GLib.idle_add(showMenuAsOffline)
     else:
         online = True
@@ -253,7 +261,7 @@ def stopServer():
 
     if online: #Asserted
         if run(killCommand).returncode != 0:
-            Notify.Notification.new("Failed to stop", "That ain't pretty", None).show()
+            Notify.Notification.new("Failed to stop", "That ain't pretty", "emacs").show()
 
     online = False
 
