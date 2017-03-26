@@ -179,7 +179,7 @@ def quit_but_leave(source):
     leaveOpen = True
     quit_option(source)
 
-from subprocess import run
+from subprocess import run, Popen
 
 def startClient():
     global clientThreads
@@ -228,6 +228,8 @@ def showMenuAsOnline():
     item_startClient.set_sensitive(True)
     item_quitButLeave.set_sensitive(True)
 
+from os.path import expanduser
+
 def launchServer():
     global online, instance
     assert(not online)
@@ -236,7 +238,7 @@ def launchServer():
     GLib.idle_add(lambda: item_startServer.set_sensitive(False))
     print("Emacs Daemon indicator ============= Starting server")
 
-    code = run(emacsDaemonCommand).returncode
+    code = Popen(emacsDaemonCommand, cwd=expanduser("~")).wait()
 
     if code != 0:
         Notify.Notification.new("Starting the Emacs server failed", "Probably a problem on your end", "emacs").show()
