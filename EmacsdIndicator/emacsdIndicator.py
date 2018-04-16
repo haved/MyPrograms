@@ -43,7 +43,7 @@ def main():
 
 def checkIfRunning():
     global daemonRunning
-    daemonRunning = False #TODO: Check
+    daemonRunning = True #TODO: Check
 
 #Must be gtk thread
 def start_option(source):
@@ -109,14 +109,33 @@ def get_menus():
     working_menu = Gtk.Menu();
     online_menu = Gtk.Menu();
 
+    # =========== Offline =========
     item_startServer = Gtk.MenuItem("Start emacs server")
     item_startServer.connect('activate', start_option)
     offline_menu.append(item_startServer)
 
+    item_checkServer = Gtk.MenuItem("Check server")
+    item_checkServer.connect('activate', check_option)
+    offline_menu.append(item_checkServer)
+
+    item_quit = Gtk.MenuItem("Quit")
+    item_quit.connect('activate', quit_option)
+    offline_menu.append(item_quit)
+
+    offline_menu.show_all()
+
+    # =========== Working =========
     item_dummy_working = Gtk.MenuItem("Working...")
     item_dummy_working.set_sensitive(False)
     working_menu.append(item_dummy_working)
 
+    item_quit = Gtk.MenuItem("Quit")
+    item_quit.connect('activate', quit_option)
+    working_menu.append(item_quit)
+
+    working_menu.show_all()
+
+    # =========== Online ==========
     item_stopServer = Gtk.MenuItem("Stop server")
     item_stopServer.connect('activate', stop_option)
     online_menu.append(item_stopServer)
@@ -125,10 +144,9 @@ def get_menus():
     item_restartServer.connect('activate', restart_option)
     online_menu.append(item_restartServer)
 
-    item_checkServer = Gtk.MenuItem("Check server")
-    item_checkServer.connect('activate', check_option)
-    offline_menu.append(item_checkServer)
-    online_menu.append(item_checkServer)
+    item_quit = Gtk.MenuItem("Check")
+    item_quit.connect('activate', check_option)
+    online_menu.append(item_quit)
 
     item_startClient = Gtk.MenuItem("Start client")
     item_startClient.connect('activate', start_client_option)
@@ -136,14 +154,11 @@ def get_menus():
 
     item_quit = Gtk.MenuItem("Quit")
     item_quit.connect('activate', quit_option)
-    offline_menu.append(item_quit)
-    working_menu.append(item_quit)
     online_menu.append(item_quit)
 
-    offline_menu.show_all()
-    working_menu.show_all()
     online_menu.show_all()
 
+    # ========== Put them all in the global =========
     GLOBAL_MENUS = {'offline': offline_menu, 'working': working_menu, 'online': online_menu}
     return GLOBAL_MENUS
 
